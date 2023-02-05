@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Button from '@mui/material/Button';
 import reactLogo from './assets/react.svg'
 import './App.css'
 
@@ -26,6 +27,7 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
+        <Button variant="contained">Hello World</Button>
       </p>
     </div>
   )
