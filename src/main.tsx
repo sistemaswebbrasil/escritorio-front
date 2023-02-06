@@ -4,6 +4,7 @@ import { HashRouter } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
 import App from "./App";
 import store from "./store";
+import { AxiosInterceptor } from "./api/Axios";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -18,7 +19,9 @@ root.render(
   <React.StrictMode>
     <ReduxProvider store={store}>
       <HashRouter>
-        <App />
+        <AxiosInterceptor>
+          <App />
+        </AxiosInterceptor>
       </HashRouter>
     </ReduxProvider>
   </React.StrictMode>
