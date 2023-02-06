@@ -14,13 +14,14 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthServices } from "../../api";
 import {
   setAuthenticated,
   setUnauthenticated,
 } from "../../store/reducers/login";
 import { useDispatch } from "react-redux";
+import { FormHelperText } from "@mui/material";
 
 function Copyright(props: any) {
   return (
@@ -45,25 +46,6 @@ const theme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: any) => {
-    event.preventDefault();
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
   return (
     <>
       <Formik
@@ -89,10 +71,11 @@ export default function SignIn() {
             setSubmitting(false);
 
             dispatch(
-              setAuthenticated({ email: values.email, token: data.token })
+              setAuthenticated({ email: values.email, token: data.token }),
             );
             navigate("/");
           } catch (err: any) {
+            console.log(err);
             setStatus({ success: false });
             setErrors({ submit: err.message });
             setSubmitting(false);
@@ -135,16 +118,29 @@ export default function SignIn() {
                       id="email"
                       label="Email Address"
                       name="email"
+                      type="email"
+                      value={values.email}
                       autoComplete="email"
                       autoFocus
                       onBlur={handleBlur}
                       onChange={handleChange}
+                      error={Boolean(touched.email && errors.email)}
                     />
+                    {touched.email && errors.email && (
+                      <FormHelperText
+                        error
+                        id="standard-weight-helper-text-email-login"
+                      >
+                        {errors.email}
+                      </FormHelperText>
+                    )}
+
                     <TextField
                       margin="normal"
                       required
                       fullWidth
                       name="password"
+                      value={values.password}
                       label="Password"
                       type="password"
                       id="password"
@@ -152,6 +148,21 @@ export default function SignIn() {
                       onBlur={handleBlur}
                       onChange={handleChange}
                     />
+                    {touched.password && errors.password && (
+                      <FormHelperText
+                        error
+                        id="standard-weight-helper-text-password-login"
+                      >
+                        {errors.password}
+                      </FormHelperText>
+                    )}
+
+                    {errors.submit && (
+                      <Grid item xs={12}>
+                        <FormHelperText error>{errors.submit}</FormHelperText>
+                      </Grid>
+                    )}
+
                     <FormControlLabel
                       control={<Checkbox value="remember" color="primary" />}
                       label="Remember me"
