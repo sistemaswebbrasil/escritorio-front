@@ -1,30 +1,27 @@
 import React from "react";
 import {
-  Avatar,
   Box,
   Button,
-  Checkbox,
   Container,
-  createTheme,
   CssBaseline,
-  FormControlLabel,
   FormHelperText,
   Grid,
-  Link,
   TextField,
-  ThemeProvider,
 } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Copyright } from "@mui/icons-material";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import PersonService from "../../api/services/PersonService";
 import { useNavigate } from "react-router";
 
+import { setUnauthenticated } from "../../store/reducers/login";
+import { useDispatch } from "react-redux";
+
 function PersonsForm() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const theme = createTheme();
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
@@ -54,6 +51,13 @@ function PersonsForm() {
               setStatus({ success: false });
               setErrors({ submit: err.message });
               setSubmitting(false);
+              //throw new Error("Count is 5. Error Occurred.");
+              console.log(err.message == "Credenciais Incorretas");
+              if (err.message == "Credenciais Incorretas") {
+                dispatch(setUnauthenticated());
+                navigate("/login");
+              }
+              //
             }
           }}
         >
@@ -67,100 +71,95 @@ function PersonsForm() {
             values,
           }) => (
             <form noValidate onSubmit={handleSubmit}>
-              <ThemeProvider theme={theme}>
-                <Container component="main" maxWidth="xs">
-                  <CssBaseline />
-                  <Box
-                    sx={{
-                      marginTop: 8,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="name"
+                    value={values.name}
+                    label="Nome"
+                    type="name"
+                    id="name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {touched.name && errors.name && (
+                    <FormHelperText
+                      error
+                      id="standard-weight-helper-text-name-login"
+                    >
+                      {errors.name}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={values.email}
+                    autoFocus
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    error={Boolean(touched.email && errors.email)}
+                  />
+                  {touched.email && errors.email && (
+                    <FormHelperText
+                      error
+                      id="standard-weight-helper-text-email-login"
+                    >
+                      {errors.email}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    name="note"
+                    value={values.note}
+                    label="Observações"
+                    multiline
+                    rows={4}
+                    id="note"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {touched.note && errors.note && (
+                    <FormHelperText
+                      error
+                      id="standard-weight-helper-text-note-login"
+                    >
+                      {errors.note}
+                    </FormHelperText>
+                  )}
+                </Grid>
+              </Grid>
+              <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box sx={{ mt: 1 }}>
+                  {errors.submit && (
+                    <Grid item xs={12}>
+                      <FormHelperText error>{errors.submit}</FormHelperText>
+                    </Grid>
+                  )}
+
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    disabled={isSubmitting}
                   >
-                    <Box sx={{ mt: 1 }}>
-                      <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="name"
-                        value={values.name}
-                        label="Nome"
-                        type="name"
-                        id="name"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                      />
-                      {touched.name && errors.name && (
-                        <FormHelperText
-                          error
-                          id="standard-weight-helper-text-name-login"
-                        >
-                          {errors.name}
-                        </FormHelperText>
-                      )}
-                      <TextField
-                        margin="normal"
-                        fullWidth
-                        id="email"
-                        label="Email"
-                        name="email"
-                        type="email"
-                        value={values.email}
-                        autoFocus
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        error={Boolean(touched.email && errors.email)}
-                      />
-                      {touched.email && errors.email && (
-                        <FormHelperText
-                          error
-                          id="standard-weight-helper-text-email-login"
-                        >
-                          {errors.email}
-                        </FormHelperText>
-                      )}
-
-                      <TextField
-                        margin="normal"
-                        fullWidth
-                        name="note"
-                        value={values.note}
-                        label="Observações"
-                        multiline
-                        rows={4}
-                        id="note"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                      />
-                      {touched.note && errors.note && (
-                        <FormHelperText
-                          error
-                          id="standard-weight-helper-text-note-login"
-                        >
-                          {errors.note}
-                        </FormHelperText>
-                      )}
-
-                      {errors.submit && (
-                        <Grid item xs={12}>
-                          <FormHelperText error>{errors.submit}</FormHelperText>
-                        </Grid>
-                      )}
-
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                        disabled={isSubmitting}
-                      >
-                        Salvar
-                      </Button>
-                    </Box>
-                  </Box>
-                </Container>
-              </ThemeProvider>
+                    Salvar
+                  </Button>
+                </Box>
+              </Container>
             </form>
           )}
         </Formik>

@@ -9,6 +9,7 @@ import {
   UnauthorizedError,
 } from "./errors";
 
+
 export default function handleAxiosResponseError(error: AxiosError<ErrorData>) {
   const { response } = error;
 
@@ -20,6 +21,10 @@ export default function handleAxiosResponseError(error: AxiosError<ErrorData>) {
     if (response?.status === 401) throw new UnauthorizedError(data);
     if (response?.status === 422) throw new InvalidDataError(data);
     if (response?.status === 404) throw new ResourceNotFoundError(data);
+    if (response?.status === 500 && response?.data.message === "Expired token") {
+      throw new UnauthorizedError(data);
+
+    }
   }
 
   throw new GenericError({

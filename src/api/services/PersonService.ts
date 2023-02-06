@@ -1,4 +1,4 @@
-import { Person, PersonCreate } from "types/Person";
+import { Person, PersonCreate } from "../../types/Person";
 import Service from "../Service";
 
 class PersonService extends Service {
@@ -19,7 +19,7 @@ class PersonService extends Service {
         console.log(response);
       })
       .catch((error) => {
-        console.log(error);  
+        console.log(error);
       });
   }
 }

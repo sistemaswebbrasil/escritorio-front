@@ -10,6 +10,7 @@ export type ErrorData = {
     userMessage: string;
   };
   userMessage?: string;
+  message?: string
 };
 
 export type ErrorType =
