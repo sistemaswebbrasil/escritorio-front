@@ -1,10 +1,11 @@
-import { Outlet } from 'react-router-dom';
-
+import { Outlet } from "react-router-dom";
+import Copyright from "../Copyright";
 
 const MinimalLayout = () => (
-    <>
-        <Outlet />
-    </>
+  <>
+    <Outlet />
+    <Copyright />
+  </>
 );
 
 export default MinimalLayout;

@@ -22,24 +22,7 @@ import {
 } from "../../store/reducers/login";
 import { useDispatch } from "react-redux";
 import { FormHelperText } from "@mui/material";
-
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { useEffect } from "react";
 
 const theme = createTheme();
 
