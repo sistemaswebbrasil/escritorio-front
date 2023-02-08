@@ -9,7 +9,7 @@ import { setUnauthenticated } from "../store/reducers/login";
 
 // axios instance
 const instance = axios.create({
-  baseURL: "https://escritorio.rejaneemicheleadvocacia.com.br/api",
+  baseURL: import.meta.env.VITE_API,
 });
 
 const AxiosInterceptor = ({ children }: any) => {
