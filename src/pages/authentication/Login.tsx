@@ -46,6 +46,7 @@ const theme = createTheme();
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [checked, setChecked] = React.useState(false);
   return (
     <>
       <Formik
@@ -71,7 +72,7 @@ export default function SignIn() {
             setSubmitting(false);
 
             dispatch(
-              setAuthenticated({ email: values.email, token: data.token }),
+              setAuthenticated({ email: values.email, token: data.token })
             );
             navigate("/");
           } catch (err: any) {
@@ -164,7 +165,15 @@ export default function SignIn() {
                     )}
 
                     <FormControlLabel
-                      control={<Checkbox value="remember" color="primary" />}
+                      control={
+                        <Checkbox
+                          checked={checked}
+                          onChange={(event) => setChecked(event.target.checked)}
+                          name="checked"
+                          color="primary"
+                          size="small"
+                        />
+                      }
                       label="Remember me"
                     />
                     <Button

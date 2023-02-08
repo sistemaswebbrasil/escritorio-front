@@ -1,23 +1,44 @@
+import * as React from "react";
 import {
-  Button,
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridValueGetterParams,
+} from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
 import { useState, useEffect } from "react";
 import PersonService from "../../api/services/PersonService";
 import { Person } from "../../types/Person";
 import AddIcon from "@mui/icons-material/Add";
+import { Button, Grid, IconButton, Typography } from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
 
-function PersonList() {
+const columns: GridColDef[] = [
+  {
+    field: "date",
+    headerName: "Action",
+    renderCell: (i) => (
+      <>
+        <IconButton
+          aria-label="delete"
+          size="small"
+          component={Link}
+          to={`/persons/form/${i.id}`}
+          title="Editar Pessoa"
+        >
+          <CreateIcon fontSize="inherit" />
+        </IconButton>
+      </>
+    ),
+  },
+  { field: "id", headerName: "ID", width: 70 },
+  { field: "name", headerName: "Nome", width: 130 },
+  { field: "email", headerName: "Email", width: 130 },
+  { field: "note", headerName: "Observação", width: 300 },
+];
+
+export default function DataTable() {
   const [rows, setRows] = useState<Person[]>([]);
 
   useEffect(() => {
@@ -42,36 +63,19 @@ function PersonList() {
           Adicionar Pessoa
         </Button>
       </Grid>
-
-      <Grid item xs={12} sx={{ mb: -2.25 }}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Nome</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Observação</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.name}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="left">{row.email}</TableCell>
-                  <TableCell align="left">{row.note}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <Grid
+        container
+        justifyContent="flex-end"
+        sx={{ mt: 2, mb: 2, ml: 2, mr: 2 }}
+      >
+        <DataGrid
+          autoHeight
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+        />
       </Grid>
     </Grid>
   );
 }
-
-export default PersonList;

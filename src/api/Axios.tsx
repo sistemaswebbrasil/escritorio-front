@@ -2,8 +2,6 @@ import axios, { AxiosError, AxiosResponse, HeadersDefaults } from "axios";
 import { useEffect } from "react";
 import { ErrorData } from "./CustomError";
 import { useNavigate } from "react-router-dom";
-import handleAxiosResponseError from "./handleAxiosResponseError";
-import handleAxiosResponseSuccess from "./handleAxiosResponseSuccess";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 
@@ -18,7 +16,6 @@ const AxiosInterceptor = ({ children }: any) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let token = useSelector((state: RootState) => state.login.token);
-  console.log(token);
 
   if (token) {
     instance.defaults.headers = {
@@ -33,18 +30,27 @@ const AxiosInterceptor = ({ children }: any) => {
 
     const errInterceptor = (error: AxiosError<ErrorData>) => {
       const { response } = error;
-      console.log("errInterceptor");
       if (response?.status === 401) {
         dispatch(setUnauthenticated());
         navigate("/login");
       }
-
       return Promise.reject();
     };
 
     const interceptor = instance.interceptors.response.use(
-      handleAxiosResponseSuccess,
-      handleAxiosResponseError
+      resInterceptor,
+      errInterceptor
+    );
+
+    instance.interceptors.request.use(
+      (defaults) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+          defaults.headers.Authorization = `Bearer ${token}`;
+        }
+        return defaults;
+      },
+      (errors) => Promise.reject(errors)
     );
 
     return () => instance.interceptors.response.eject(interceptor);
